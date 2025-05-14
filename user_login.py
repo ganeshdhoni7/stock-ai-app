@@ -7,7 +7,7 @@ def hash_password(password):
 
 # Hardcoded credentials (change to your preferred username/password hash)
 USERNAME = "selvaganesh"
-PASSWORD_HASH = "e0e6097a6f8af07daf5fc7244336ba37133713e5dfb5e7b7d518a7ac9fae7e59"  # ← hash for "supersecret"
+PASSWORD_HASH = "760828cc1faa4a392a2886978febc543321c4a5afd86e7b5cef0ea9eb3fca8ea"  # ← hash for "supersecret"
 
 def check_login(username, password):
     return username == USERNAME and hash_password(password) == PASSWORD_HASH

@@ -1,16 +1,20 @@
 import streamlit as st
 import hashlib
+import hashlib
 
-# Hash password using SHA256
-def hash_password(password):
-    return hashlib.sha256(password.encode()).hexdigest()
+# 🔐 Hardcoded credentials (hashed for security)
+USERNAME = "admin"
+PASSWORD_HASH = hashlib.sha256("admin@123".encode()).hexdigest()
 
-# Hardcoded credentials (change to your preferred username/password hash)
-USERNAME = "selvaganesh"
-PASSWORD_HASH = "760828cc1faa4a392a2886978febc543321c4a5afd86e7b5cef0ea9eb3fca8ea"  # ← hash for "supersecret"
-
-def check_login(username, password):
-    return username == USERNAME and hash_password(password) == PASSWORD_HASH
+def verify_login(username, password):
+    """
+    Verifies the login credentials.
+    Returns True if username and password are correct, else False.
+    """
+    if username != USERNAME:
+        return False
+    entered_password_hash = hashlib.sha256(password.encode()).hexdigest()
+    return entered_password_hash == PASSWORD_HASH
 
 def show_login():
     st.title("🔐 Login to Access AI Tools")

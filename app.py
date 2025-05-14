@@ -1,44 +1,51 @@
 import streamlit as st
-from user_login import show_login
-from fo_prediction import show_fo_prediction
-from strategy_analyzer import show_strategy_analyzer
-from sentiment import show_sentiment
+from user_login import verify_login
 
-st.set_page_config(page_title="Stock AI Hub", layout="wide")
+# Initialize session state on first load
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
 
-# --- Authenticate User ---
-if "authenticated" not in st.session_state:
-    st.session_state["authenticated"] = False
+# Login block
+if not st.session_state.logged_in:
+    st.title("📊 AI Stock Market Dashboard Login")
+    username = st.text_input("Username")
+    password = st.text_input("Password", type="password")
+    if st.button("Login"):
+        if verify_login(username, password):
+            st.success("✅ Login successful!")
+            st.session_state.logged_in = True
+            st.rerun()  # 🔁 rerun to show the app after login
+        else:
+            st.error("❌ Invalid username or password.")
 
-if not st.session_state["authenticated"]:
-    show_login()
-    st.stop()
+# After login
+if st.session_state.logged_in:
+    st.sidebar.success("👋 Welcome, Selvaganesh!")
+    
+    page = st.sidebar.selectbox("📂 Choose a Page", [
+        "Home", 
+        "F&O Prediction", 
+        "Strategy Analyzer", 
+        "Sentiment Analysis", 
+        "Live Charts"
+    ])
 
-# --- Sidebar Navigation ---
-st.sidebar.title("📊 AI Stock Tools")
-menu = st.sidebar.radio(
-    "Select a Feature",
-    ["🏠 Home", "🔮 F&O Prediction", "🧠 Strategy Analyzer", "📰 Market Sentiment"]
-)
+    if page == "Home":
+        st.title("📈 AI Stock Dashboard")
+        st.markdown("Welcome to your private AI dashboard. Select a function from the left.")
+    
+    elif page == "F&O Prediction":
+        import pages.fo_prediction as fo_prediction
+        fo_prediction.show()
 
-# --- Main Area ---
-st.title("🚀 AI Stock Market Website")
+    elif page == "Strategy Analyzer":
+        import pages.strategy as strategy
+        strategy.show()
 
-if menu == "🏠 Home":
-    st.image("https://media.giphy.com/media/QBd2kLB5qDmysEXre9/giphy.gif", width=600)
-    st.markdown("""
-        ### 🔧 Features:
-        - F&O Option Prediction
-        - Strategy Analyzer
-        - Market Sentiment from News
-        - Secure Private Access
-    """)
+    elif page == "Sentiment Analysis":
+        import pages.sentiment as sentiment
+        sentiment.show()
 
-elif menu == "🔮 F&O Prediction":
-    show_fo_prediction()
-
-elif menu == "🧠 Strategy Analyzer":
-    show_strategy_analyzer()
-
-elif menu == "📰 Market Sentiment":
-    show_sentiment()
+    elif page == "Live Charts":
+        import pages.charts as charts
+        charts.show()
